@@ -1,0 +1,9 @@
+version: '3.9'
+services:
+  devcollab:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/data:/app/data
+    restart: unless-stopped
