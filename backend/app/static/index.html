@@ -102,57 +102,66 @@ print(f'Mean: {mean}')
 
     <section id="cv" class="tab">
       <div class="form-container">
-        <h2>🔬 Computer Vision Playground</h2>
+        <h2>🔬 Live Computer Vision</h2>
         
         <div class="cv-controls">
           <div class="cv-method active" data-method="canny">
             <h3>🎯 Edge Detection</h3>
-            <p>Detect edges using Canny algorithm</p>
+            <p>Real-time edge detection</p>
           </div>
           <div class="cv-method" data-method="hands">
             <h3>✋ Hand Detection</h3>
-            <p>Detect and track hand landmarks</p>
+            <p>Live hand tracking</p>
           </div>
           <div class="cv-method" data-method="faces">
             <h3>😊 Face Detection</h3>
-            <p>Detect faces with bounding boxes</p>
+            <p>Real-time face detection</p>
           </div>
         </div>
         
-        <form id="cv-form">
-          <div class="row">
-            <label>📷 Upload Image</label>
-            <input id="cv-file" type="file" accept="image/*" required />
-          </div>
-          
-          <div id="canny-controls" class="cv-method-controls">
-            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <div class="row">
-                <label>Lower Threshold</label>
-                <input id="cv-low" type="number" value="100" min="0" max="255" />
-              </div>
-              <div class="row">
-                <label>Upper Threshold</label>
-                <input id="cv-high" type="number" value="200" min="0" max="255" />
-              </div>
+        <div class="webcam-controls">
+          <button id="start-webcam" type="button">📹 Start Webcam</button>
+          <button id="stop-webcam" type="button" class="btn-secondary hidden">⏹️ Stop Webcam</button>
+        </div>
+        
+        <div id="canny-controls" class="cv-method-controls">
+          <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="row">
+              <label>Lower Threshold</label>
+              <input id="cv-low" type="range" value="100" min="0" max="255" />
+              <span id="low-value">100</span>
+            </div>
+            <div class="row">
+              <label>Upper Threshold</label>
+              <input id="cv-high" type="range" value="200" min="0" max="255" />
+              <span id="high-value">200</span>
             </div>
           </div>
-          
-          <div id="hands-controls" class="cv-method-controls hidden">
-            <p>Hand detection will automatically identify and track hand landmarks in your image.</p>
-          </div>
-          
-          <div id="faces-controls" class="cv-method-controls hidden">
-            <p>Face detection will identify faces and draw bounding boxes around them.</p>
-          </div>
-          
-          <button type="submit" id="cv-submit-btn">🔍 Process Image</button>
-        </form>
+        </div>
+        
+        <div id="hands-controls" class="cv-method-controls hidden">
+          <p>Hand detection will automatically identify and track hand landmarks in real-time.</p>
+        </div>
+        
+        <div id="faces-controls" class="cv-method-controls hidden">
+          <p>Face detection will identify faces and draw bounding boxes around them in real-time.</p>
+        </div>
       </div>
       
-      <div class="image-result">
-        <label>🎨 Processing Result</label>
-        <img id="cv-result" alt="Upload an image and select a processing method to see results here" style="max-height: 500px;" />
+      <div class="webcam-container">
+        <div class="video-grid">
+          <div class="video-panel">
+            <h3>📹 Live Feed</h3>
+            <video id="webcam-video" autoplay muted playsinline></video>
+          </div>
+          <div class="video-panel">
+            <h3>🎨 Processed Output</h3>
+            <canvas id="output-canvas"></canvas>
+          </div>
+        </div>
+        <div id="webcam-status" class="status-message">
+          Click "Start Webcam" to begin live computer vision processing
+        </div>
       </div>
     </section>
 

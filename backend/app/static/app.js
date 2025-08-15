@@ -148,14 +148,30 @@ runForm.addEventListener('submit', async (e) => {
 
 // --- CV ---
 const cvMethods = document.querySelectorAll('.cv-method');
-const cvForm = document.getElementById('cv-form');
-const cvFile = document.getElementById('cv-file');
 const cvLow = document.getElementById('cv-low');
 const cvHigh = document.getElementById('cv-high');
-const cvResult = document.getElementById('cv-result');
-const cvSubmitBtn = document.getElementById('cv-submit-btn');
+const lowValue = document.getElementById('low-value');
+const highValue = document.getElementById('high-value');
+const startWebcamBtn = document.getElementById('start-webcam');
+const stopWebcamBtn = document.getElementById('stop-webcam');
+const webcamVideo = document.getElementById('webcam-video');
+const outputCanvas = document.getElementById('output-canvas');
+const webcamStatus = document.getElementById('webcam-status');
+const ctx = outputCanvas.getContext('2d');
 
 let selectedMethod = 'canny';
+let webcamStream = null;
+let animationId = null;
+let isProcessing = false;
+
+// Update range input values
+cvLow.addEventListener('input', () => {
+  lowValue.textContent = cvLow.value;
+});
+
+cvHigh.addEventListener('input', () => {
+  highValue.textContent = cvHigh.value;
+});
 
 // CV Method Selection
 cvMethods.forEach(method => {
@@ -169,53 +185,138 @@ cvMethods.forEach(method => {
       control.classList.add('hidden');
     });
     document.getElementById(`${selectedMethod}-controls`).classList.remove('hidden');
-    
-    // Update button text
-    const methodNames = {
-      'canny': '🎯 Detect Edges',
-      'hands': '✋ Detect Hands', 
-      'faces': '😊 Detect Faces'
-    };
-    cvSubmitBtn.textContent = methodNames[selectedMethod];
   });
 });
 
-cvForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const originalText = cvSubmitBtn.textContent;
-  
-  cvSubmitBtn.textContent = '🔄 Processing...';
-  cvSubmitBtn.disabled = true;
-  
-  const form = new FormData();
-  if (!cvFile.files[0]) return;
-  
-  form.append('file', cvFile.files[0]);
-  
-  let endpoint = '/api/run/cv/canny';
-  if (selectedMethod === 'canny') {
-    form.append('low', cvLow.value || '100');
-    form.append('high', cvHigh.value || '200');
-    endpoint = '/api/run/cv/canny';
-  } else if (selectedMethod === 'hands') {
-    endpoint = '/api/run/cv/hands';
-  } else if (selectedMethod === 'faces') {
-    endpoint = '/api/run/cv/faces';
+// Webcam functionality
+async function startWebcam() {
+  try {
+    webcamStream = await navigator.mediaDevices.getUserMedia({ 
+      video: { 
+        width: { ideal: 640 }, 
+        height: { ideal: 480 },
+        facingMode: 'user'
+      } 
+    });
+    
+    webcamVideo.srcObject = webcamStream;
+    webcamVideo.onloadedmetadata = () => {
+      outputCanvas.width = webcamVideo.videoWidth;
+      outputCanvas.height = webcamVideo.videoHeight;
+      startProcessing();
+    };
+    
+    startWebcamBtn.classList.add('hidden');
+    stopWebcamBtn.classList.remove('hidden');
+    webcamStatus.textContent = '🟢 Webcam active - Processing live video';
+    webcamStatus.className = 'status-message active';
+    
+  } catch (error) {
+    console.error('Error accessing webcam:', error);
+    webcamStatus.textContent = '❌ Error accessing webcam. Please check permissions.';
+    webcamStatus.className = 'status-message error';
   }
+}
+
+function stopWebcam() {
+  if (webcamStream) {
+    webcamStream.getTracks().forEach(track => track.stop());
+    webcamStream = null;
+  }
+  
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  }
+  
+  webcamVideo.srcObject = null;
+  ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+  
+  startWebcamBtn.classList.remove('hidden');
+  stopWebcamBtn.classList.add('hidden');
+  webcamStatus.textContent = 'Click "Start Webcam" to begin live computer vision processing';
+  webcamStatus.className = 'status-message';
+  isProcessing = false;
+}
+
+async function processFrame() {
+  if (!webcamVideo.videoWidth || !webcamVideo.videoHeight || isProcessing) {
+    animationId = requestAnimationFrame(processFrame);
+    return;
+  }
+  
+  isProcessing = true;
   
   try {
-    const res = await fetch(endpoint, { method: 'POST', body: form });
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    cvResult.src = url;
-    cvResult.style.display = 'block';
+    // Draw current frame to a temporary canvas
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = webcamVideo.videoWidth;
+    tempCanvas.height = webcamVideo.videoHeight;
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.drawImage(webcamVideo, 0, 0);
+    
+    // Convert to blob and send to backend
+    tempCanvas.toBlob(async (blob) => {
+      if (!blob) {
+        isProcessing = false;
+        return;
+      }
+      
+      const form = new FormData();
+      form.append('file', blob, 'frame.png');
+      
+      let endpoint = '/api/run/cv/canny';
+      if (selectedMethod === 'canny') {
+        form.append('low', cvLow.value);
+        form.append('high', cvHigh.value);
+        endpoint = '/api/run/cv/canny';
+      } else if (selectedMethod === 'hands') {
+        endpoint = '/api/run/cv/hands';
+      } else if (selectedMethod === 'faces') {
+        endpoint = '/api/run/cv/faces';
+      }
+      
+      try {
+        const res = await fetch(endpoint, { method: 'POST', body: form });
+        const processedBlob = await res.blob();
+        
+        // Create image from processed blob and draw to output canvas
+        const img = new Image();
+        img.onload = () => {
+          ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+          ctx.drawImage(img, 0, 0, outputCanvas.width, outputCanvas.height);
+          URL.revokeObjectURL(img.src);
+          isProcessing = false;
+        };
+        img.src = URL.createObjectURL(processedBlob);
+        
+      } catch (error) {
+        console.error('Processing error:', error);
+        isProcessing = false;
+      }
+    }, 'image/png', 0.8);
+    
   } catch (error) {
-    alert('Error processing image: ' + error.message);
+    console.error('Frame processing error:', error);
+    isProcessing = false;
   }
   
-  cvSubmitBtn.textContent = originalText;
-  cvSubmitBtn.disabled = false;
-});
+  // Continue processing
+  animationId = requestAnimationFrame(processFrame);
+}
+
+function startProcessing() {
+  if (!animationId) {
+    processFrame();
+  }
+}
+
+// Event listeners
+startWebcamBtn.addEventListener('click', startWebcam);
+stopWebcamBtn.addEventListener('click', stopWebcam);
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', stopWebcam);
 
 // --- Chat ---
 const chatBox = document.getElementById('chat-box');

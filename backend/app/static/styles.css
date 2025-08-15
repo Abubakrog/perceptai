@@ -445,6 +445,117 @@ button:active {
   border: 1px solid var(--primary-300);
 }
 
+/* Webcam Styles */
+.webcam-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.webcam-container {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.video-panel {
+  text-align: center;
+}
+
+.video-panel h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--gray-700);
+}
+
+#webcam-video, #output-canvas {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200);
+  background: var(--gray-100);
+  object-fit: cover;
+}
+
+#output-canvas {
+  background: var(--gray-900);
+}
+
+.status-message {
+  text-align: center;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  color: var(--gray-600);
+  font-style: italic;
+}
+
+.status-message.active {
+  background: var(--success-500);
+  color: white;
+}
+
+.status-message.error {
+  background: var(--error-500);
+  color: white;
+}
+
+/* Range Input Styles */
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--gray-200);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+
+.cv-method-controls .row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cv-method-controls .row span {
+  min-width: 3rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--primary-600);
+}
+
 /* Chat Styles */
 .chat-container {
   background: white;
@@ -540,6 +651,21 @@ footer a:hover {
   
   .cv-controls {
     grid-template-columns: 1fr;
+  }
+  
+  .video-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  #webcam-video, #output-canvas {
+    max-width: 100%;
+    height: 250px;
+  }
+  
+  .webcam-controls {
+    flex-direction: column;
+    align-items: center;
   }
   
   .snippet-header {
