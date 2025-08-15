@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevCollab — AI/ML & CV Collaboration</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>DevCollab</h1>
+    <p>Collaborate, share code, and run computer vision demos</p>
+  </header>
+
+  <nav>
+    <button class="tab-btn" data-tab="snippets">Snippets</button>
+    <button class="tab-btn" data-tab="run-code">Run Code</button>
+    <button class="tab-btn" data-tab="cv">Computer Vision</button>
+    <button class="tab-btn" data-tab="chat">Chat</button>
+  </nav>
+
+  <main>
+    <section id="snippets" class="tab active">
+      <h2>Share a Code Snippet</h2>
+      <form id="snippet-form">
+        <div class="row">
+          <label>Title</label>
+          <input id="snippet-title" type="text" placeholder="My awesome snippet" required />
+        </div>
+        <div class="row">
+          <label>Language</label>
+          <input id="snippet-language" type="text" value="python" />
+        </div>
+        <div class="row">
+          <label>Tags (comma-separated)</label>
+          <input id="snippet-tags" type="text" placeholder="ai, cv" />
+        </div>
+        <div class="row">
+          <label>Code</label>
+          <textarea id="snippet-code" rows="8" placeholder="# Write your code here" required></textarea>
+        </div>
+        <button type="submit">Save Snippet</button>
+      </form>
+
+      <h3>Latest Snippets</h3>
+      <div id="snippets-list"></div>
+    </section>
+
+    <section id="run-code" class="tab">
+      <h2>Run Python Code</h2>
+      <form id="run-code-form">
+        <div class="row">
+          <label>Code</label>
+          <textarea id="run-code-input" rows="10" placeholder="print('Hello AI/ML!')" required></textarea>
+        </div>
+        <button type="submit">Run</button>
+      </form>
+      <div class="row">
+        <label>Stdout</label>
+        <pre id="stdout" class="output"></pre>
+      </div>
+      <div class="row">
+        <label>Stderr</label>
+        <pre id="stderr" class="output"></pre>
+      </div>
+      <div class="row">
+        <label>Exit Code</label>
+        <pre id="exit-code" class="output"></pre>
+      </div>
+    </section>
+
+    <section id="cv" class="tab">
+      <h2>Computer Vision: Canny Edge Detection</h2>
+      <form id="cv-form">
+        <div class="row">
+          <label>Image</label>
+          <input id="cv-file" type="file" accept="image/*" required />
+        </div>
+        <div class="row">
+          <label>Lower Threshold</label>
+          <input id="cv-low" type="number" value="100" />
+        </div>
+        <div class="row">
+          <label>Upper Threshold</label>
+          <input id="cv-high" type="number" value="200" />
+        </div>
+        <button type="submit">Run Canny</button>
+      </form>
+      <div class="row">
+        <label>Result</label>
+        <img id="cv-result" alt="Processed image will appear here" />
+      </div>
+    </section>
+
+    <section id="chat" class="tab">
+      <h2>Real-time Chat</h2>
+      <div id="chat-box" class="chat-box"></div>
+      <form id="chat-form">
+        <input id="chat-input" type="text" placeholder="Type a message" required />
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
