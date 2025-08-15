@@ -4,12 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DevCollab — AI/ML & CV Collaboration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <header>
-    <h1>DevCollab</h1>
-    <p>Collaborate, share code, and run computer vision demos</p>
+    <h1>🚀 DevCollab</h1>
+    <p>AI-Powered Collaboration Hub for Computer Vision & Code Sharing</p>
   </header>
 
   <nav>
@@ -21,89 +24,153 @@
 
   <main>
     <section id="snippets" class="tab active">
-      <h2>Share a Code Snippet</h2>
-      <form id="snippet-form">
-        <div class="row">
-          <label>Title</label>
-          <input id="snippet-title" type="text" placeholder="My awesome snippet" required />
-        </div>
-        <div class="row">
-          <label>Language</label>
-          <input id="snippet-language" type="text" value="python" />
-        </div>
-        <div class="row">
-          <label>Tags (comma-separated)</label>
-          <input id="snippet-tags" type="text" placeholder="ai, cv" />
-        </div>
-        <div class="row">
-          <label>Code</label>
-          <textarea id="snippet-code" rows="8" placeholder="# Write your code here" required></textarea>
-        </div>
-        <button type="submit">Save Snippet</button>
-      </form>
+      <div class="form-container">
+        <h2>📝 Share a Code Snippet</h2>
+        <form id="snippet-form">
+          <div class="row">
+            <label>Title</label>
+            <input id="snippet-title" type="text" placeholder="My awesome AI/ML snippet" required />
+          </div>
+          <div class="row">
+            <label>Language</label>
+            <select id="snippet-language">
+              <option value="python">Python</option>
+              <option value="javascript">JavaScript</option>
+              <option value="typescript">TypeScript</option>
+              <option value="cpp">C++</option>
+              <option value="java">Java</option>
+              <option value="r">R</option>
+              <option value="matlab">MATLAB</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Tags (comma-separated)</label>
+            <input id="snippet-tags" type="text" placeholder="ai, computer-vision, machine-learning" />
+          </div>
+          <div class="row">
+            <label>Code</label>
+            <textarea id="snippet-code" rows="12" placeholder="# Write your amazing code here
+import cv2
+import numpy as np
 
-      <h3>Latest Snippets</h3>
+# Your computer vision magic starts here..." required></textarea>
+          </div>
+          <button type="submit">💾 Save Snippet</button>
+        </form>
+      </div>
+
+      <h3>📚 Latest Code Snippets</h3>
       <div id="snippets-list"></div>
     </section>
 
     <section id="run-code" class="tab">
-      <h2>Run Python Code</h2>
-      <form id="run-code-form">
+      <div class="form-container">
+        <h2>⚡ Execute Python Code</h2>
+        <form id="run-code-form">
+          <div class="row">
+            <label>Python Code</label>
+            <textarea id="run-code-input" rows="12" placeholder="# Test your Python code here
+print('Hello AI/ML World!')
+
+# Example: Simple data analysis
+import math
+numbers = [1, 2, 3, 4, 5]
+mean = sum(numbers) / len(numbers)
+print(f'Mean: {mean}')
+
+# Your code here..." required></textarea>
+          </div>
+          <button type="submit">🚀 Execute Code</button>
+        </form>
+      </div>
+      
+      <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
         <div class="row">
-          <label>Code</label>
-          <textarea id="run-code-input" rows="10" placeholder="print('Hello AI/ML!')" required></textarea>
+          <label>✅ Standard Output</label>
+          <pre id="stdout" class="output"></pre>
         </div>
-        <button type="submit">Run</button>
-      </form>
-      <div class="row">
-        <label>Stdout</label>
-        <pre id="stdout" class="output"></pre>
+        <div class="row">
+          <label>❌ Error Output</label>
+          <pre id="stderr" class="output"></pre>
+        </div>
       </div>
       <div class="row">
-        <label>Stderr</label>
-        <pre id="stderr" class="output"></pre>
-      </div>
-      <div class="row">
-        <label>Exit Code</label>
+        <label>📊 Exit Code</label>
         <pre id="exit-code" class="output"></pre>
       </div>
     </section>
 
     <section id="cv" class="tab">
-      <h2>Computer Vision: Canny Edge Detection</h2>
-      <form id="cv-form">
-        <div class="row">
-          <label>Image</label>
-          <input id="cv-file" type="file" accept="image/*" required />
+      <div class="form-container">
+        <h2>🔬 Computer Vision Playground</h2>
+        
+        <div class="cv-controls">
+          <div class="cv-method active" data-method="canny">
+            <h3>🎯 Edge Detection</h3>
+            <p>Detect edges using Canny algorithm</p>
+          </div>
+          <div class="cv-method" data-method="hands">
+            <h3>✋ Hand Detection</h3>
+            <p>Detect and track hand landmarks</p>
+          </div>
+          <div class="cv-method" data-method="faces">
+            <h3>😊 Face Detection</h3>
+            <p>Detect faces with bounding boxes</p>
+          </div>
         </div>
-        <div class="row">
-          <label>Lower Threshold</label>
-          <input id="cv-low" type="number" value="100" />
-        </div>
-        <div class="row">
-          <label>Upper Threshold</label>
-          <input id="cv-high" type="number" value="200" />
-        </div>
-        <button type="submit">Run Canny</button>
-      </form>
-      <div class="row">
-        <label>Result</label>
-        <img id="cv-result" alt="Processed image will appear here" />
+        
+        <form id="cv-form">
+          <div class="row">
+            <label>📷 Upload Image</label>
+            <input id="cv-file" type="file" accept="image/*" required />
+          </div>
+          
+          <div id="canny-controls" class="cv-method-controls">
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="row">
+                <label>Lower Threshold</label>
+                <input id="cv-low" type="number" value="100" min="0" max="255" />
+              </div>
+              <div class="row">
+                <label>Upper Threshold</label>
+                <input id="cv-high" type="number" value="200" min="0" max="255" />
+              </div>
+            </div>
+          </div>
+          
+          <div id="hands-controls" class="cv-method-controls hidden">
+            <p>Hand detection will automatically identify and track hand landmarks in your image.</p>
+          </div>
+          
+          <div id="faces-controls" class="cv-method-controls hidden">
+            <p>Face detection will identify faces and draw bounding boxes around them.</p>
+          </div>
+          
+          <button type="submit" id="cv-submit-btn">🔍 Process Image</button>
+        </form>
+      </div>
+      
+      <div class="image-result">
+        <label>🎨 Processing Result</label>
+        <img id="cv-result" alt="Upload an image and select a processing method to see results here" style="max-height: 500px;" />
       </div>
     </section>
 
     <section id="chat" class="tab">
-      <h2>Real-time Chat</h2>
-      <div id="chat-box" class="chat-box"></div>
-      <form id="chat-form">
-        <input id="chat-input" type="text" placeholder="Type a message" required />
-        <button type="submit">Send</button>
-      </form>
+      <div class="chat-container">
+        <h2 style="padding: 1.5rem; margin: 0; border-bottom: 1px solid var(--gray-200);">💬 Real-time Collaboration Chat</h2>
+        <div id="chat-box" class="chat-box"></div>
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" type="text" placeholder="Share your thoughts, ask questions, or discuss AI/ML topics..." required />
+          <button type="submit">📤 Send</button>
+        </form>
+      </div>
     </section>
   </main>
 
   <footer>
-    <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+    <p>Built with ❤️ for the AI/ML community</p>
+    <a href="https://github.com" target="_blank" rel="noreferrer">🔗 View on GitHub</a>
   </footer>
 
   <script src="/app.js"></script>

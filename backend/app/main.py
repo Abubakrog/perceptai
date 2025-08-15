@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import storage
-from .cv import read_image_bytes_to_bgr, canny_edges, encode_png
+from .cv import read_image_bytes_to_bgr, canny_edges, detect_hands, detect_faces, encode_png
 
 
 app = FastAPI(title="DevCollab: AI/ML & CV Collaboration Hub")
@@ -68,6 +68,24 @@ async def run_canny(
     image_bgr = read_image_bytes_to_bgr(content)
     edges_bgr = canny_edges(image_bgr, low_threshold=low, high_threshold=high)
     png_bytes = encode_png(edges_bgr)
+    return Response(content=png_bytes, media_type="image/png")
+
+
+@app.post("/api/run/cv/hands")
+async def run_hand_detection(file: UploadFile = File(...)):
+    content = await file.read()
+    image_bgr = read_image_bytes_to_bgr(content)
+    result_bgr = detect_hands(image_bgr)
+    png_bytes = encode_png(result_bgr)
+    return Response(content=png_bytes, media_type="image/png")
+
+
+@app.post("/api/run/cv/faces")
+async def run_face_detection(file: UploadFile = File(...)):
+    content = await file.read()
+    image_bgr = read_image_bytes_to_bgr(content)
+    result_bgr = detect_faces(image_bgr)
+    png_bytes = encode_png(result_bgr)
     return Response(content=png_bytes, media_type="image/png")
 
 
